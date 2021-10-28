@@ -24,7 +24,7 @@ public class frmServer implements Runnable {
 	
 	private Thread server_thread;
 	
-	private JFrame frame;
+	public static JFrame frame;
 	private JLabel lblServerLog;
 	private JTextArea server_log;
 	JButton btnStartServer;

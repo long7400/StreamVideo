@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -17,13 +18,12 @@ import Modul.DirectorClass;
 
 public class frmClient {
 	
-	
+	// Diretor
 	DefaultListModel<String> list_model = new DefaultListModel<>();
 	String input_dir = "raw_videos/";
 	File[] raw_videos = new File(input_dir).listFiles();
-	/*
-	 * Client
-	 */
+	
+	// VideoList
 	static Logger log = LogManager.getLogger(frmClient.class);
 	
 	private Socket socket;
@@ -34,7 +34,7 @@ public class frmClient {
 	private JComboBox video;
 	private JComboBox protocol;
 	
-	private JFrame frame;
+	private static JFrame frame;
 
 	/**
 	 * Launch the application.
@@ -43,11 +43,28 @@ public class frmClient {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					frmClient window = new frmClient();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
+					if((new File("raw_videos/").listFiles().length == 0) && (new File("videos/").listFiles().length == 0))
+						JOptionPane.showMessageDialog(frame, "Thư mục rỗng", "Exiting...", JOptionPane.ERROR_MESSAGE);
+					else
+					{
+						frmClient window = new frmClient();
+						window.frame.setVisible(true);
+					}
+					
+				}
+				catch(ConnectException e)
+				{
+					JOptionPane.showMessageDialog(frame, "Vui lòng khởi động Server", "Thông báo", JOptionPane.OK_OPTION);
+				}
+				catch(NullPointerException npe)
+				{
+					JOptionPane.showMessageDialog(frame, "Không tìm thấy thư mục raw_videos.", "Exiting...", JOptionPane.ERROR_MESSAGE);
+				}
+				catch(Exception e)
+				{
 					e.printStackTrace();
 				}
+				
 			}
 		});
 	}
@@ -76,7 +93,7 @@ public class frmClient {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-	
+		
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 102, 153));
@@ -84,20 +101,26 @@ public class frmClient {
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 
-
+		// Panel Diretor
 		JPanel pDirector = new JPanel();
 		pDirector.setBounds(183, 0, 808, 536);
 		frame.getContentPane().add(pDirector);
 		pDirector.setLayout(null);
 		
+		
+		// Panel Video
 		JPanel pVideo = new JPanel();
 		pVideo.setBounds(183, 0, 808, 536);
 		frame.getContentPane().add(pVideo);
 		pVideo.setLayout(null);
+		
+		// Set Visble Panel
 		pDirector.setVisible(false);
 		pVideo.setVisible(false);
+		
+		// Input Video List Layout
 		for(File video : raw_videos)
-			  list_model.addElement(video.getName());
+			 list_model.addElement(video.getName());
 			JList input_list = new JList(list_model);
 			input_list.setBounds(33, 76, 250, 360);
 			pDirector.add(input_list);
@@ -111,6 +134,7 @@ public class frmClient {
 			JList output_list = new JList();
 			scrollPane_1.setViewportView(output_list);
 			
+			//Button Start director video
 			JButton btnStart = new JButton("B\u1EAFt \u0111\u1EA7u");
 			btnStart.addMouseListener(new MouseAdapter() {
 				@Override
@@ -140,14 +164,17 @@ public class frmClient {
 					JOptionPane.showConfirmDialog(null, "Đã hoàn thành");
 				}
 			});
+			
 			btnStart.setFont(new Font("Tahoma", Font.PLAIN, 17));
 			btnStart.setBounds(631, 76, 107, 34);
 			pDirector.add(btnStart);
 			
+			// Btn refresh => Chưa code
 			JButton btnRefresh = new JButton("Refresh");
 			btnRefresh.setBounds(10, 11, 89, 23);
 			pDirector.add(btnRefresh);
 			
+			// labe ------------------------------------------
 			JLabel lbListvd = new JLabel("Đầu vào");
 			lbListvd.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			lbListvd.setBounds(30, 45, 280, 23);
@@ -157,6 +184,8 @@ public class frmClient {
 			lbOut.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			lbOut.setBounds(340, 45, 69, 20);
 			pDirector.add(lbOut);
+			
+			// Label Click
 			JLabel lbDirector = new JLabel("DIRECTOR");
 			lbDirector.addMouseListener(new MouseAdapter() {
 				@Override
@@ -172,6 +201,7 @@ public class frmClient {
 		lbDirector.setBounds(55, 129, 95, 25);
 		panel.add(lbDirector);
 		
+		// Label Click
 		JLabel lbListVdieo = new JLabel("LIST VIDEO");
 		lbListVdieo.addMouseListener(new MouseAdapter() {
 			@Override
@@ -187,7 +217,7 @@ public class frmClient {
 		panel.add(lbListVdieo);
 		
 		
-		
+		// Combobox Bitrate
 		bitrate = new JComboBox();
 		bitrate.setBounds(32, 100, 171, 28);
 		pVideo.add(bitrate);
@@ -196,6 +226,7 @@ public class frmClient {
 		bitrate.addItem("1.0");
 		bitrate.addItem("3.0");
 		
+		// Combox Format
 		format = new JComboBox();
 		format.setBounds(263, 100, 171, 28);
 		pVideo.add(format);
@@ -275,7 +306,9 @@ public class frmClient {
 		
 	
 	}
-
+	/** 
+	 * Code Client
+	 */
 	void send_request_to_server(ObjectOutputStream output_stream, ObjectInputStream input_stream) throws Exception
 	{
 		ArrayList<String> request = new ArrayList<>();
