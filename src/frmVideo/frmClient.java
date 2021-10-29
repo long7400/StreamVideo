@@ -164,12 +164,22 @@ public class frmClient {
         btnStart.setBounds(631, 76, 107, 34);
         pDirector.add(btnStart);
 
-        // Btn refresh => Ch?a code
+        // Btn refresh input only for now
         JButton btnRefresh = new JButton("Refresh");
         btnRefresh.setBounds(10, 11, 89, 23);
         pDirector.add(btnRefresh);
-        
-        
+        btnRefresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultListModel<String> refreshListView = new DefaultListModel<>();
+                refreshListView.clear();
+                File[] refreshFolder = new File(input_dir).listFiles();
+                for (File video : refreshFolder) {
+                    refreshListView.addElement(video.getName());
+                }
+                input_list.setModel(refreshListView);
+            }
+        });
 
         //File Choose
         final JFileChooser fileDialog = new JFileChooser();
@@ -184,10 +194,11 @@ public class frmClient {
                 int returnVal = fileDialog.showOpenDialog(frame);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
-                        File file =fileDialog.getSelectedFile();
-                        Path newPath=Paths.get(input_dir,file.getName());
+                        File file = fileDialog.getSelectedFile();
+                        Path newPath = Paths.get(input_dir, file.getName());
                         Files.copy(file.toPath(), newPath);
-                    }catch(IOException ex){}
+                    } catch (IOException ex) {
+                    }
                 } else {
                     log.debug("Failed to move the file");
                 }
