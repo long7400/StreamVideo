@@ -25,8 +25,8 @@ public class DirectorClass {
 		try
 		{
 			log.debug("Initialising FFMpegClient");
-			ffmpeg = new FFmpeg("C:/ffmpeg/bin/ffmpeg");
-			ffprobe = new FFprobe("C:/ffmpeg/bin/ffprobe");
+			ffmpeg = new FFmpeg("ffmpeg/bin/ffmpeg/ffmpeg.exe");
+			ffprobe = new FFprobe("ffmpeg/bin/ffprobe/ffprobe.exe");
 		}
 		catch (IOException e)
 		{
@@ -86,11 +86,12 @@ public class DirectorClass {
 		}	
 		
 		// deleting all videos in the /raw_videos directory
-		for(File video : raw_videos)
-		{
-			System.out.println("Deleting '" + video.getName() + "'...");
-			video.delete();
-		}
+                //for later, now i need the raw
+//		for(File video : raw_videos)
+//		{
+//			System.out.println("Deleting '" + video.getName() + "'...");
+//			video.delete();
+//		}
 		
 		System.out.println("Done!");
 		
