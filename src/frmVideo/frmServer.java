@@ -1,8 +1,10 @@
 package frmVideo;
 
 import java.awt.EventQueue;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -102,10 +104,13 @@ public class frmServer implements Runnable {
                 command_line_args.add(videos_dir_fullpath + "/" + selected_video);
                 command_line_args.add("-f");
                 command_line_args.add("mpegts");
-                command_line_args.add("udp://127.0.0.1:6000");
+                command_line_args.add("udp://127.0.0.1:6000?pkt_size=1316");
             } else if (selected_protocol.equals("TCP")) {
+                command_line_args.add("-re");
                 command_line_args.add("-i");
                 command_line_args.add(videos_dir_fullpath + "/" + selected_video);
+                command_line_args.add("-codec");
+                command_line_args.add("copy");
                 command_line_args.add("-f");
                 command_line_args.add("mpegts");
                 command_line_args.add("tcp://127.0.0.1:5100?listen");
@@ -125,7 +130,12 @@ public class frmServer implements Runnable {
 
             ProcessBuilder process_builder = new ProcessBuilder(command_line_args);
             Process streamer_host = process_builder.start();
-
+            //log for debug
+            BufferedReader br = new BufferedReader(new InputStreamReader(streamer_host.getErrorStream()));
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                log.debug("Video Info [" + line + "] ");
+            }
             output_stream.close();
             input_stream.close();
             socket.close();
@@ -194,7 +204,7 @@ public class frmServer implements Runnable {
         // implementation of the listener after the Stop Server button is pressed
         btnStopServer.addActionListener(event -> {
             log.debug("'Stop Server' button has been pressed");
-            
+
             System.exit(0);	// close the GUI window of the server
         });
     }
