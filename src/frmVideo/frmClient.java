@@ -14,6 +14,10 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import Modul.DirectorClass;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class frmClient {
 
@@ -164,8 +168,33 @@ public class frmClient {
         JButton btnRefresh = new JButton("Refresh");
         btnRefresh.setBounds(10, 11, 89, 23);
         pDirector.add(btnRefresh);
+        
+        
 
-        // labe ------------------------------------------
+        //File Choose
+        final JFileChooser fileDialog = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Video Files", "mp4", "avi", "mkv");
+        fileDialog.setFileFilter(filter);
+        JButton showFileDialogButton = new JButton("Open File");
+        showFileDialogButton.setBounds(100, 11, 89, 23);
+        pDirector.add(showFileDialogButton);
+        showFileDialogButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int returnVal = fileDialog.showOpenDialog(frame);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        File file =fileDialog.getSelectedFile();
+                        Path newPath=Paths.get(input_dir,file.getName());
+                        Files.copy(file.toPath(), newPath);
+                    }catch(IOException ex){}
+                } else {
+                    log.debug("Failed to move the file");
+                }
+            }
+        });
+
+        // label ------------------------------------------
         JLabel lbListvd = new JLabel("Đầu vào");
         lbListvd.setFont(new Font("Tahoma", Font.PLAIN, 15));
         lbListvd.setBounds(30, 45, 280, 23);
@@ -193,8 +222,8 @@ public class frmClient {
         panel.add(lbDirector);
 
         // Label Click
-        JLabel lbListVdieo = new JLabel("LIST VIDEO");
-        lbListVdieo.addMouseListener(new MouseAdapter() {
+        JLabel lbListVideo = new JLabel("LIST VIDEO");
+        lbListVideo.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 pDirector.setVisible(false);
@@ -202,10 +231,10 @@ public class frmClient {
 
             }
         });
-        lbListVdieo.setForeground(Color.WHITE);
-        lbListVdieo.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        lbListVdieo.setBounds(55, 179, 106, 25);
-        panel.add(lbListVdieo);
+        lbListVideo.setForeground(Color.WHITE);
+        lbListVideo.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lbListVideo.setBounds(55, 179, 106, 25);
+        panel.add(lbListVideo);
 
         // Combobox Bitrate
         bitrate = new JComboBox();

@@ -98,7 +98,6 @@ public class frmServer implements Runnable {
             command_line_args.add("ffmpeg/bin/ffmpeg/ffmpeg.exe");
 
             if (selected_protocol.equals("UDP")) {
-                command_line_args.add("-re");
                 command_line_args.add("-i");
                 command_line_args.add(videos_dir_fullpath + "/" + selected_video);
                 command_line_args.add("-f");
@@ -195,7 +194,7 @@ public class frmServer implements Runnable {
         // implementation of the listener after the Stop Server button is pressed
         btnStopServer.addActionListener(event -> {
             log.debug("'Stop Server' button has been pressed");
-
+            
             System.exit(0);	// close the GUI window of the server
         });
     }
