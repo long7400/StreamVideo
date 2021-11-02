@@ -287,6 +287,8 @@ public class frmClient {
         pVideo.add(btnStream);
 
         JButton btnSearch = new JButton("Lọc");
+        btnSearch.setBounds(32, 139, 89, 28);
+        pVideo.add(btnSearch);
         btnSearch.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -301,6 +303,7 @@ public class frmClient {
                     bitrate.setEnabled(false);
                     format.setEnabled(false);
                     btnStart.setEnabled(false);
+                    btnSearch.setEnabled(false);
 
                     // enable the components to be used for the second response of the server
                     video.setEnabled(true);
@@ -311,8 +314,6 @@ public class frmClient {
                 }
             }
         });
-        btnSearch.setBounds(32, 139, 89, 28);
-        pVideo.add(btnSearch);
 
         video = new JComboBox();
         video.setBounds(32, 211, 245, 34);

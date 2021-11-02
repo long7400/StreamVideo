@@ -87,7 +87,7 @@ public class ServerThread implements Runnable {
                 String selected_video = stream_specs.get(0);
                 String selected_protocol = stream_specs.get(1);
 
-                server_log.append("\nUsing the " + selected_protocol + " protocol to stream '" + selected_video + "' from " + name + "\n");
+                server_log.append("Using the " + selected_protocol + " protocol to stream '" + selected_video + "' from " + name + "\n");
 
                 String videos_dir_fullpath = System.getProperty("user.dir") + "/videos";
 
@@ -137,7 +137,7 @@ public class ServerThread implements Runnable {
 
             }
         } catch (Exception ex) {
-            server_log.append(name + " has departed\n");
+            server_log.append(name + " has departed\n\n");
         } finally {
             try {
                 output_stream.close();
