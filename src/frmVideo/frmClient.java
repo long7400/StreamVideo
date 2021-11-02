@@ -43,24 +43,21 @@ public class frmClient {
      * Launch the application.
      */
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    if ((new File("raw_videos/").listFiles().length == 0) && (new File("videos/").listFiles().length == 0)) {
-                        JOptionPane.showMessageDialog(frame, "Thư mục rỗng", "Exiting...", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        frmClient window = new frmClient();
-                        window.frame.setVisible(true);
-                    }
-
-                } catch (ConnectException e) {
-                    JOptionPane.showMessageDialog(frame, "Vui lòng khởi động Server", "Thông báo", JOptionPane.OK_OPTION);
-                } catch (NullPointerException npe) {
-                    JOptionPane.showMessageDialog(frame, "Không tìm thấy thư mục raw_videos.", "Exiting...", JOptionPane.ERROR_MESSAGE);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        EventQueue.invokeLater(() -> {
+            try {
+                if ((new File("raw_videos/").listFiles().length == 0) && (new File("videos/").listFiles().length == 0)) {
+                    JOptionPane.showMessageDialog(frame, "Thư mục rỗng", "Exiting...", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    frmClient window = new frmClient();
+                    window.frame.setVisible(true);
                 }
 
+            } catch (ConnectException e) {
+                JOptionPane.showMessageDialog(frame, "Vui lòng khởi động Server", "Thông báo", JOptionPane.OK_OPTION);
+            } catch (NullPointerException npe) {
+                JOptionPane.showMessageDialog(frame, "Không tìm thấy thư mục raw_videos.", "Exiting...", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
