@@ -40,7 +40,7 @@ public class frmClient {
     private static JFrame frame;
 
     /**
-     * Launch the application.
+     * 
      */
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -95,23 +95,23 @@ public class frmClient {
         frame.getContentPane().add(panel);
         panel.setLayout(null);
 
-        // Panel Diretor
+        // Panel cho Diretor
         JPanel pDirector = new JPanel();
         pDirector.setBounds(183, 0, 808, 536);
         frame.getContentPane().add(pDirector);
         pDirector.setLayout(null);
 
-        // Panel Video
+        // Panel cho Video
         JPanel pVideo = new JPanel();
         pVideo.setBounds(183, 0, 808, 536);
         frame.getContentPane().add(pVideo);
         pVideo.setLayout(null);
 
-        // Set Visble Panel
+        // Set hiển thị cho các Panel
         pDirector.setVisible(false);
         pVideo.setVisible(false);
 
-        // Input Video List Layout
+        // Lấy danh sách Video
         for (File video : raw_videos) {
             list_model.addElement(video.getName());
         }
@@ -124,11 +124,11 @@ public class frmClient {
         pDirector.add(scrollPane_1);
         //--------------------------------------
 
-        // Output Videos List Layout
+        // Xuất danh sách Video
         JList output_list = new JList();
         scrollPane_1.setViewportView(output_list);
 
-        //Button Start director video
+        // Tạo nút Start của Director
         JButton btnStart = new JButton("Bắt đầu");
         btnStart.addMouseListener(new MouseAdapter() {
             @Override
@@ -145,7 +145,7 @@ public class frmClient {
                 updated_input_list_model.clear();
                 input_list.setModel(updated_input_list_model);
 
-                // update the output video list from /videos
+                // Cập nhật danh sách các video output trên đường dẫn /video
                 DefaultListModel<String> updated_output_list_model = new DefaultListModel<>();
 
                 for (File video : output_videos) {
@@ -161,7 +161,7 @@ public class frmClient {
         btnStart.setBounds(631, 76, 107, 34);
         pDirector.add(btnStart);
 
-        // Btn refresh input only for now
+        // Buntton Refesh
         JButton btnRefresh = new JButton("Refresh");
         btnRefresh.setBounds(10, 11, 89, 23);
         pDirector.add(btnRefresh);
@@ -178,7 +178,7 @@ public class frmClient {
             }
         });
 
-        //File Choose
+        // Button Chọn File
         final JFileChooser fileDialog = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Video Files", "mp4", "avi", "mkv");
         fileDialog.setFileFilter(filter);
@@ -213,7 +213,7 @@ public class frmClient {
         lbOut.setBounds(340, 45, 69, 20);
         pDirector.add(lbOut);
 
-        // Label Click
+        // Click Lable Director để chuyển Panel
         JLabel lbDirector = new JLabel("DIRECTOR");
         lbDirector.addMouseListener(new MouseAdapter() {
             @Override
@@ -229,7 +229,7 @@ public class frmClient {
         lbDirector.setBounds(55, 129, 95, 25);
         panel.add(lbDirector);
 
-        // Label Click
+        // Click Lable List Video để chuyển Panel
         JLabel lbListVideo = new JLabel("LIST VIDEO");
         lbListVideo.addMouseListener(new MouseAdapter() {
             @Override
@@ -268,16 +268,15 @@ public class frmClient {
                 log.debug("'Stream' button has been pressed");
 
                 try {
-                    // send the specifications (selected video and protocol) to the server
-                    // and stream the incoming video through ffplay
+                    // Gửi thông tin video đã chọn và phương thức streamming cho server
                     send_specs_to_server(output_stream);
 
-                    // close the socket and streams from the client when all communications are done
+                    // Đóng socket và luồng sau khi hoành thành giao tiếp
                     output_stream.close();
                     input_stream.close();
                     socket.close();
 
-                    System.exit(0);	// close the GUI window of the client
+                    System.exit(0);	// Đóng giao diện của Client
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
@@ -295,17 +294,16 @@ public class frmClient {
                 log.debug("Connect button has been pressed");
 
                 try {
-                    // send the request (bitrate and format) to the server
-                    // and receive a list of videos based on the request
+                    // Gửi Bitrate và format của video tới server
+                    // Nhận danh sách dựa trên Bitrate và format đã gửi trước đó
                     send_request_to_server(output_stream, input_stream);
 
-                    // gray out the components already used for the first response of the server
+                    // Tắt các component đã dùng khi nhận được respond từ server lần đầu tiên
                     bitrate.setEnabled(false);
                     format.setEnabled(false);
                     btnStart.setEnabled(false);
                     btnSearch.setEnabled(false);
-
-                    // enable the components to be used for the second response of the server
+                    // Bật các component sẽ dùng khi nhận được respond từ server lần đầu tiên   
                     video.setEnabled(true);
                     protocol.setEnabled(true);
                     btnStream.setEnabled(true);
@@ -338,12 +336,11 @@ public class frmClient {
 
         log.debug("Sending request to server: " + bitrate.getSelectedItem().toString() + " bitrate and " + format.getSelectedItem().toString() + " format");
 
-        output_stream.writeObject(request);	// send the request with the selected bitrate and format
+        output_stream.writeObject(request);	// Gửi Bitrate và format của video tới server đã chọn
 
-        ArrayList<String> available_videos = (ArrayList<String>) input_stream.readObject(); // receive a list of videos based on the request
+        ArrayList<String> available_videos = (ArrayList<String>) input_stream.readObject(); // Nhận danh sách dựa trên Bitrate và format đã gửi trước đó
         log.debug("Received list of available videos to stream");
-
-        // fill the dropdown menu of the videos on the gui with the contents of this list
+        // Lưu dữ liệu danh sách các video lên trên giao diện
         for (String current_video : available_videos) {
             video.addItem(current_video);
         }
@@ -358,9 +355,8 @@ public class frmClient {
 
         log.debug("Sending stream specs to server: " + video.getSelectedItem().toString() + " using " + protocol.getSelectedItem().toString());
         output_stream.writeObject(stream_specs);
-
-        // create a process through the command line to run the ffplay program
-        // to play the incoming streamed video with the appropriate arguments
+        // Tạo tiến trình xử lý thông qua command line để chạy ffplay
+        // Để chạy video stream với tùy chọn đã lựa chọn
         ArrayList<String> command_line_args = new ArrayList<>();
 
         command_line_args.add("ffmpeg/bin/ffmpeg/ffplay.exe");

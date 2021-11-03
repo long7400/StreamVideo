@@ -44,7 +44,7 @@ public class ServerThread implements Runnable {
 
 //                ObjectInputStream input_stream = new ObjectInputStream(socket.getInputStream());
 //                ObjectOutputStream output_stream = new ObjectOutputStream(socket.getOutputStream());
-                // receive the request (bitrate and format) from client and
+                // Nhận thông tin từ request gồm (bitrate and format) từ client và xử lý
                 ArrayList<String> received_request = (ArrayList<String>) input_stream.readObject();
                 float selected_bitrate = Float.parseFloat(received_request.get(0));
                 String selected_format = received_request.get(1);
@@ -53,23 +53,22 @@ public class ServerThread implements Runnable {
 
                 ArrayList<String> available_videos = new ArrayList<>(); // list of videos available to stream
 
-                // for each video in the /videos/ directory...
+                // Vòng lặp lấy danh sách các file trong đường dẫn /videos
                 for (File video : videos_list) {
                     String current_video = video.getName();
 
-                    // take the last 3 characters of the filenames (e.g. .avi, .mp4, .mkv) 
-                    // and compare them to the received format to filter out the rest of the videos at another format
+                    // Lấy 3 ký tự cuối từ filenames (e.g. .avi, .mp4, .mkv) 
+                    // So sánh với format mà Client request để lọc
                     if (current_video.substring(current_video.length() - 3).equals(selected_format)) {
-                        // split the current video filename at the '-' character (e.g. 'Test-0.2Mbps.avi' to 'Test' and '0.2Mbps.avi')
-                        // to filter out the 3 characters that signify the bitrate of the video
-                        // and turn it to a floating point number
+                        // Tách chuỗi tên ra tên video và bitrate của nó (e.g. 'Test-0.2Mbps.avi' to 'Test' and '0.2Mbps.avi')
+                        // Lọc chuỗi để lấy số bitrate và chuyển nó thành số
                         String[] splitted_video_name = (current_video).split("-");
 
                         for (String s : splitted_video_name) {
                             if (s.contains("Mbps")) {
                                 float current_video_bitrate = Float.parseFloat(s.substring(0, 3));
-                                // if the current video is in equal or less bitrate, it can be streamed
-                                // so add it to the list of  videos available to stream
+                                // Nếu bitrate của video đang xét thấp hơn hoặc bằng với bitrate đã chọn từ client thì sẽ có thể stream
+                                // Thêm nó vào danh sách các video có thể stream
                                 if (selected_bitrate >= current_video_bitrate) {
                                     available_videos.add(current_video);
                                 }
@@ -79,10 +78,10 @@ public class ServerThread implements Runnable {
                     }
                 }
 
-                // send the list of videos that are available to stream based on the specified format and bitrate
+                // Gửi dữ liệu các video có thể stream dựa trên bitrate và format
                 output_stream.writeObject(available_videos);
 
-                // receive the selected video and the protocol specification to stream with
+                // Nhận được thông tin của video đã chọn từ client và phương thức sử dụng
                 ArrayList<String> stream_specs = (ArrayList<String>) input_stream.readObject();
                 String selected_video = stream_specs.get(0);
                 String selected_protocol = stream_specs.get(1);
@@ -91,8 +90,8 @@ public class ServerThread implements Runnable {
 
                 String videos_dir_fullpath = System.getProperty("user.dir") + "/videos";
 
-                // create a process through the command line to run the ffplay program
-                // to play the incoming streamed video with the appropriate arguments
+                // Khởi tạo tiến trình thông qua commandline dựa vào các thông tin để chạy ffplay
+                // Để chạy video stream với tùy chọn đã lựa chọn
                 ArrayList<String> command_line_args = new ArrayList<>();
 
                 command_line_args.add("ffmpeg/bin/ffmpeg/ffmpeg.exe");
@@ -128,7 +127,7 @@ public class ServerThread implements Runnable {
 
                 ProcessBuilder process_builder = new ProcessBuilder(command_line_args);
                 Process streamer_host = process_builder.start();
-                //log for debug
+                //log để debug
                 BufferedReader br = new BufferedReader(new InputStreamReader(streamer_host.getErrorStream()));
                 String line = "";
                 while ((line = br.readLine()) != null) {
