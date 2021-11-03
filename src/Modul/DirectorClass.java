@@ -86,12 +86,11 @@ public class DirectorClass {
 		}	
 		
 		// deleting all videos in the /raw_videos directory
-                //for later, now i need the raw
-//		for(File video : raw_videos)
-//		{
-//			System.out.println("Deleting '" + video.getName() + "'...");
-//			video.delete();
-//		}
+		for(File video : raw_videos)
+		{
+			System.out.println("Deleting '" + video.getName() + "'...");
+			video.delete();
+		}
 		
 		System.out.println("Done!");
 		

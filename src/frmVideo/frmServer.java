@@ -35,7 +35,7 @@ public class frmServer implements Runnable {
         server_log.append("Server listening..\n");
         try {
             while ((socket = server.accept()) != null) {
-                new ServerThread(socket, "Client#" + i, server_log);
+                new ServerThread(socket, "Client#" + (i++), server_log);
                 server_log.append("Thread for Client#" + (i++) + " generating...\n");
             }
         } catch (Exception e) {
