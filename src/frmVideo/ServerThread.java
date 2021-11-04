@@ -41,9 +41,6 @@ public class ServerThread implements Runnable {
             log.debug("Listening for requests...\n");
             File[] videos_list = new File("videos/").listFiles();
             while (true) {
-
-//                ObjectInputStream input_stream = new ObjectInputStream(socket.getInputStream());
-//                ObjectOutputStream output_stream = new ObjectOutputStream(socket.getOutputStream());
                 // Nhận thông tin từ request gồm (bitrate and format) từ client và xử lý
                 ArrayList<String> received_request = (ArrayList<String>) input_stream.readObject();
                 float selected_bitrate = Float.parseFloat(received_request.get(0));
@@ -51,7 +48,7 @@ public class ServerThread implements Runnable {
 
                 server_log.append("Received request for " + selected_bitrate + " bitrate and " + selected_format + " format from " + name+"\n");
 
-                ArrayList<String> available_videos = new ArrayList<>(); // list of videos available to stream
+                ArrayList<String> available_videos = new ArrayList<>();
 
                 // Vòng lặp lấy danh sách các file trong đường dẫn /videos
                 for (File video : videos_list) {

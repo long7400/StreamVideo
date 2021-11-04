@@ -365,7 +365,7 @@ public class frmClient {
             command_line_args.add("udp://127.0.0.1:6000");
         } else if (protocol.getSelectedItem().toString().equals("TCP")) {
             command_line_args.add("tcp://127.0.0.1:5100");
-        } else // for RTP/UDP, mention the session description protocol file to the server 
+        } else 
         {
             command_line_args.add("-protocol_whitelist");
             command_line_args.add("file,rtp,udp");
