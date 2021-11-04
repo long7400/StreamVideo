@@ -88,11 +88,11 @@ public class frmServer implements Runnable {
         frame.getContentPane().add(btnStopServer);
         //--------------------------------------
 
-        btnStopServer.setEnabled(false); // gray out the stop server button on startup
+        btnStopServer.setEnabled(false); // Tắt nút Start Server khi khởi động
 
-        server_thread = new Thread(this);	// create a thread for the server to run
+        server_thread = new Thread(this);	// Khởi tạo thread để xử lý Server
 
-        // implementation of the listener after the Start Server button is pressed
+        // Khai báo Listener để xử lý sự kiện nhấn nút Start Server
         btnStartServer.addActionListener(event -> {
             log.debug("'Start Server' button has been pressed");
 
@@ -102,11 +102,11 @@ public class frmServer implements Runnable {
             server_thread.start();
         });
 
-        // implementation of the listener after the Stop Server button is pressed
+       // Khai báo Listener để xử lý sự kiện nhấn nút Stop Server
         btnStopServer.addActionListener(event -> {
             log.debug("'Stop Server' button has been pressed");
 
-            System.exit(0);	// close the GUI window of the server
+            System.exit(0);	// Đóng giao diện Server
         });
     }
 

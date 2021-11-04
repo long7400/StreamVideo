@@ -14,7 +14,7 @@ public class DirectorClass {
 	
 	public static File[] generate_videos() throws NullPointerException, IOException
 	{
-		// setting up the relative paths of the directories to fetch and store videos
+		// Cài đặt các đường dẫn lấy file và lưu file
 		String input_dir_str = "raw_videos/";
 		String output_dir_str = "videos/";
 		File output_dir = new File(output_dir_str);
@@ -33,13 +33,13 @@ public class DirectorClass {
 			e.printStackTrace();
 		}
 
-		// array of raw videos from the /raw_videos directory
+		// Mảng chứa các file video gốc
 		File[] raw_videos = new File(input_dir_str).listFiles();
 		
-		// array of video formats to generate
+		// Mảng các định dạng file sẽ xử lý
 		String[] video_formats = {".avi", ".mp4", ".mkv"};
 		
-		// hashmap of the video bitrates in both float (Mbps) and long (bps) data types
+		// hashmap của bitrate các video ở cả hai dạng dữ liệu float (Mbps) và long (bps)
 		HashMap<Float, Long> video_bitrates = new HashMap<>();
 		video_bitrates.put(0.2f, 200000L);		//0.2Mbps
 		video_bitrates.put(0.5f, 500000L);		//0.5Mbps
@@ -49,23 +49,21 @@ public class DirectorClass {
 		if(!output_dir.exists())
 			Files.createDirectories(output_dir.toPath());
 		
-		// scanning each raw video...
+		// Xử lý các file video
 		for(File video : raw_videos)
 		{
 			System.out.println("Raw video found: " + video.getName());
 			String current_video_name = video.getName().replaceFirst("[.][^.]+$", "").replaceAll(" ", "_");
 
-			// for each video format...
+			// Xử lý từng định dạng video
 			for(String format : video_formats)
 			{
-				// and for each bitrate...
+				// xử lý cho từng loại bitrate
 				for (Float bitrate : video_bitrates.keySet()) 
 				{
 					System.out.println("Converting '" + current_video_name + "' to '" + format + "' with " + bitrate + "Mbps bitrate");
 					
-					// generate the video file 
-					// with the appropriate bitrate tag at the title
-					// and the appropriate video format extension
+					// Tạo video dựa trên video gộc, bit rate và định dạng
 					log.debug("Creating the transcoding");
 					FFmpegBuilder builder = (new FFmpegBuilder()
 								.setInput(input_dir_str + video.getName())
@@ -85,7 +83,7 @@ public class DirectorClass {
 			}
 		}	
 		
-		// deleting all videos in the /raw_videos directory
+		// Xóa tất cả file trong thư mục gốc
 		for(File video : raw_videos)
 		{
 			System.out.println("Deleting '" + video.getName() + "'...");
